@@ -4,6 +4,7 @@
     position: relative;
     height: 40px;
     padding: 5px;
+    background-image: linear-gradient(rgba(128, 128, 128, 0), rgba(54, 54, 54, 0.678));
 }
 .accountIcon{
     height: 40px;
@@ -11,6 +12,10 @@
     position: absolute;
     right: 15px;
     cursor: pointer;
+    transition: 500ms;
+}
+.accountIcon:hover{
+    transform: scale(1.05);
 }
 .accountIcon img{
     height: 100%;

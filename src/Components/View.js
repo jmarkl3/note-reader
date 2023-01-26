@@ -30,7 +30,47 @@ function View(props) {
     },[])
         
     function parseLine(_line){
+        // # denotes a comment
+        if(!_line || _line[0] === "#")
+            return " "
+
         var tempLine = _line
+
+        while(tempLine.includes("=>")){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace("=>", " arrow ")            
+            c++
+        }
+        while(tempLine.includes("{")){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace("{", " curley ")            
+            c++
+        }
+        while(tempLine.includes("(")){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace("(", " round ")            
+            c++
+        }   
+        while(tempLine.includes("[")){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace("[", " square ")            
+            c++
+        }                
+        while(tempLine.includes(",")){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace(",", " comma ")            
+            c++
+        }        
+        while(tempLine.includes("'")){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace("'", " quote ")            
+            c++
+        }
+        while(tempLine.includes('"')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('"', " quote ")            
+            c++
+        }        
 
         // Add up to 100 random words to a line
         var c = 0
@@ -136,11 +176,6 @@ function View(props) {
 
         }
 
-        // // Call the function again
-        // timeoutRef.current = setTimeout(() => {
-        //     readNextLine()
-        // }, 2000);
-
     }    
 
     async function speak(_toSpeak){
@@ -198,6 +233,14 @@ function View(props) {
         window.speechSynthesis.cancel()
         
     }
+    function back(){
+        pause()
+        props.setPage("titles")
+    }
+    function edit(){
+        pause()
+        props.setPage("edit")
+    }
 
     return (
         <div>
@@ -205,9 +248,9 @@ function View(props) {
                 {props.noteData.title}
             </div>
             <div className='buttonContainer'>
-                <div onClick={()=>props.setPage("titles")}>Back</div>
+                <div onClick={back}>Back</div>
                 <div onClick={restart}>Restart</div>
-                <div onClick={()=>props.setPage("edit")}>Edit</div>
+                <div onClick={edit}>Edit</div>
                 <div onClick={pause}>Pause</div>
                 <div onClick={readNextLine}>Start</div>
             </div>
