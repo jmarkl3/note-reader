@@ -66,6 +66,11 @@ function AuthMenu() {
         
     }
 
+    function creatingAccount(bool){
+        setAuthMessage("")
+        setCreateAccount(bool)
+    }
+
     return (
     <div className='authMenu'>
         {/* <div className='closeButton'>x</div> */}
@@ -100,9 +105,9 @@ function AuthMenu() {
         <div className='authBottom'>
             {
                 createAccount ?
-                <div>Have an account? <button className='createAccountButton' onClick={()=>setCreateAccount(false)}> Log In</button></div>
+                <div>Have an account? <button className='createAccountButton' onClick={()=>creatingAccount(false)}> Log In</button></div>
                 :
-                <div>New here? <button className='createAccountButton' onClick={()=>setCreateAccount(true)}> Create an Account</button></div>
+                <div>New here? <button className='createAccountButton' onClick={()=>creatingAccount(true)}> Create an Account</button></div>
             }
         </div>
     </div>
