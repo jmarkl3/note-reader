@@ -1,5 +1,6 @@
 import React from 'react'
-import cubefield from '../Images/cubefield.gif'
+import cubeField from '../Images/cubeField.gif'
+
 function Titles(props) {  
   return (
     <div className='titlesContainer'>

@@ -5,6 +5,10 @@ import Titles from './Components/Titles';
 import { initializeApp } from 'firebase/app'
 import { getDatabase, set, update, ref, push, onValue } from 'firebase/database'
 import View from './Components/View';
+import TopNav from './Components/TopNav/TopNav';
+import {auth, dbRef} from "./Firebase.js"
+import { onAuthStateChanged } from 'firebase/auth';
+import AuthMenu from './Components/AuthMenu/AuthMenu';
 
 /*
 
@@ -63,87 +67,81 @@ function App() {
 
   const [noteData, setNoteData] = useState(null)
   const [noteArray, setNoteArray] = useState([])
-
-  const dbRef = useRef()
+  const [uid, setUid] = useState(null)
+  
 
   useEffect(() => {
     firebaseSetup()
     loadNotes()
-  }, [])
+  }, [uid])
   
-  function firebaseSetup(){
-    var firebaseConfig = {
-      apiKey: "AIzaSyDCrQSCE91lh7GYlr7eTFbX--e1NnvF7Uw",
-      authDomain: "practice-79227.firebaseapp.com",
-      databaseURL: "https://practice-79227-default-rtdb.firebaseio.com",
-      projectId: "practice-79227",
-        storageBucket: "practice-79227.appspot.com",
-        messagingSenderId: "283438782315",
-        appId: "1:283438782315:web:d913f1ed9d87b5401a1e2e"     
-      }
-      var app = initializeApp(firebaseConfig)
-      dbRef.current = getDatabase(app)
-    }
-    
-    // #endregion
 
-    // Display and Page Change
-    // #region
-    
-    function displayPage(){
-      if(page == "edit")
-          return (        
-            <Edit
-              saveNote={saveNote}
-              deleteNote={deleteNote}
-              noteData={noteData}
-              setPage={setPage}
-            ></Edit>
-          );
-      if(page == "titles")
+
+  function firebaseSetup(){
+    onAuthStateChanged(auth, userSnap => {
+      setUid(userSnap?.uid)
+    })
+  }
+  
+  // #endregion
+
+  // Display and Page Change
+  // #region
+  
+  function displayPage(){
+    if(page == "edit")
         return (        
-          <Titles
-            openNote={openNote}
-            noteArray={noteArray}
-            setPage={setPage}
-            editNote={editNote}
-          ></Titles>
-        );
-      if(page == "view")
-        return (        
-          <View
-            setPage={setPage}
+          <Edit
+            saveNote={saveNote}
+            deleteNote={deleteNote}
             noteData={noteData}
-          ></View>
+            setPage={setPage}
+          ></Edit>
         );
-    }
-  
-    function openNote(_noteData){
-      
-      if(!_noteData)
-        return
-          
+    if(page == "titles")
+      return (        
+        <Titles
+          openNote={openNote}
+          noteArray={noteArray}
+          setPage={setPage}
+          editNote={editNote}
+        ></Titles>
+      );
+    if(page == "view")
+      return (        
+        <View
+          setPage={setPage}
+          noteData={noteData}
+        ></View>
+      );
+  }
+
+  function openNote(_noteData){
+    
+    if(!_noteData)
+      return
+        
+    setNoteData(_noteData)
+
+    setPage("view")
+
+  }
+
+  function editNote(_noteData, _event){
+
+    _event.stopPropagation()
+
+    if(!_noteData)
+      setNoteData({
+        key: null,
+        title: "New Note",
+        content: ""
+      })
+    else
       setNoteData(_noteData)
-  
-      setPage("view")
-  
-    }
-  
-    function editNote(_noteData, _event){
-  
-      _event.stopPropagation()
-  
-      if(!_noteData)
-        setNoteData({
-          key: null,
-          title: "New Note",
-          content: ""
-        })
-      else
-        setNoteData(_noteData)
-  
-        setPage("edit")
-    }
+
+      setPage("edit")
+  }
   
     // #endregion
 
@@ -151,9 +149,9 @@ function App() {
   // #region
   
   function loadNotes(){
-    onValue(ref(dbRef.current, "noteApp/notes/"), snap => {
-      console.log("note load value:")
-      console.log(snap.val())
+    if(!uid)
+      return
+    onValue(ref(dbRef, "noteApp/" + uid + "/notes/"), snap => {
       var tempArray = []
       for(var index in snap.val()){
         var tempNoteData = snap.val()[index]
@@ -168,6 +166,22 @@ function App() {
     })
   }
 
+  function transferNotes(){
+    if(!noteArray || !Array.isArray(noteArray) || noteArray.length == 0)
+      return
+    console.log("transferring note array: ")
+    console.log(noteArray)
+    var tempDataObject = {}
+    noteArray.forEach(item => {
+      tempDataObject[item.key] = {
+        title: item.title,
+        content: item.content,
+      }
+    })
+    console.log(tempDataObject)
+    set(ref(dbRef, "noteApp/" + uid + "/notes/"), tempDataObject)
+    
+  }
   function saveNote(_noteData){    
 
     if(_noteData.key)
@@ -177,8 +191,10 @@ function App() {
 
   }
   function saveNewNote(_noteData){
-    
-    var newRef = push(ref(dbRef.current, "noteApp/notes/"))
+    if(!uid)
+      return
+
+    var newRef = push(ref(dbRef, "noteApp/"+uid+"/notes/"))
     set(newRef, _noteData)
 
     // Put it in state in case user presses save and view
@@ -188,23 +204,36 @@ function App() {
 
   }
   function updateNote(_noteData){
-    
-    set(ref(dbRef.current, "noteApp/notes/" + _noteData.key), _noteData)
+    if(!uid)
+      return
+
+    set(ref(dbRef, "noteApp/" + uid + "/notes/" + _noteData.key), _noteData)
 
     // Put it in state in case user presses save and view
     setNoteData(_noteData)
 
   }
   function deleteNote(_noteData){
-    set(ref(dbRef.current, "noteApp/notes/" + _noteData.key), null)
+    if(!uid)
+      return
+
+    set(ref(dbRef, "noteApp/" + uid + "/notes/" + _noteData.key), null)
     setPage("titles")
   }
-
   // #endregion  
 
   return (
     <div className="App">
-      {displayPage()}
+      {uid ? 
+        <div>
+          <TopNav></TopNav>
+          {displayPage()}
+        </div>
+        :  
+        <div>
+          <AuthMenu></AuthMenu>
+        </div>
+      }
     </div>
   );
 }

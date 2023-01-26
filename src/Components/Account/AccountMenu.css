@@ -1,0 +1,35 @@
+.accountMenu{
+    position: fixed;    
+    width: 400px;
+    background-color: gray;
+    left: calc(50vw - 200px);
+    top: calc(50vh - 200px);
+    z-index: 4;
+    border-radius: 5px;
+    background-image: linear-gradient(rgba(128, 128, 128, 0), rgb(73, 73, 73));
+    border: 1px solid black;
+    box-shadow: 0 5px 10px black;    
+    padding: 0 20px 20px 20px;
+}
+.signOutButton{
+    width: 100%;
+    height: 30px;
+    background-image: linear-gradient(rgba(128, 128, 128, 0), rgb(73, 73, 73));
+    outline: none;
+    transition: 500ms;
+    background-color: rgb(185, 185, 185);
+    cursor: pointer;
+    outline: none;
+    border: none;
+    box-shadow: 0 4px 8px black;
+}
+.signOutButton:hover{
+    background-color: rgb(212, 212, 212);
+    transform: scale(0.99);
+    box-shadow: 0 2px 4px black;
+}
+.accountMenuTitle{
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+}

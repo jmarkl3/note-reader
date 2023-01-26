@@ -1,13 +1,12 @@
 .App {
   text-align: center;
   background-color: rgb(26, 26, 36);
-  background-image: linear-gradient(rgb(26, 26, 36), rgb(42, 42, 62));
+  background-image: linear-gradient(rgb(26, 26, 36), rgb(42, 42, 62), rgb(26, 26, 36));
   height: 100vh;
   width: 100vw;
   text-align: center;
   overflow: hidden;
-  box-sizing: border-box;
-  padding-top: 20px;
+  box-sizing: border-box;  
 }
 .titlesContainer{  
   padding-top: 20px;
@@ -27,10 +26,12 @@
   box-shadow: 0 0 10px rgb(24, 23, 23);
   border: 1px solid rgb(160, 160, 160);
   box-sizing: border-box;
+  transition: 500ms;
 }
 .titleBox:hover{
   background-color: rgb(155, 151, 151);
   box-shadow: 0 0 10px gold;
+  transform: scale(1.02);
 }
 .titleBoxInner{
   display: flex;
@@ -40,7 +41,7 @@
   width: 100%;
 }
 .newNoteBox{
-  background-image: url('./Images/cubefield.gif');
+  background-image: url('./Images/cubeField.gif');
   background-size: contain;
   color: white;
 }
@@ -98,6 +99,44 @@
   border-radius: 2px;
   box-shadow: 0 0 5px rgb(54, 54, 54);
 }
+.confirmWindow{
+  position: fixed;    
+  width: 400px;
+  background-color: gray;
+  left: calc(50vw - 200px);
+  top: calc(50vh - 200px);
+  z-index: 4;
+  border-radius: 5px;
+  background-image: linear-gradient(rgba(128, 128, 128, 0), rgb(73, 73, 73));
+  border: 1px solid black;
+  box-shadow: 0 5px 10px black;    
+  padding: 0 20px 20px 20px;
+
+}
+.confirmWindowTitle{
+  color: white;
+  padding: 10px;
+  font-size: 24px;
+}
+.confirmButton{
+  width: 40%;
+  height: 30px;
+  background-image: linear-gradient(rgba(128, 128, 128, 0), rgb(73, 73, 73));
+  outline: none;
+  transition: 500ms;
+  background-color: rgb(185, 185, 185);
+  cursor: pointer;
+  outline: none;
+  border: none;
+  box-shadow: 0 4px 8px black;
+  margin: 10px 20px 0px 20px;
+}
+.confirmButton:hover{
+  background-color: rgb(212, 212, 212);
+  transform: scale(0.99);
+  box-shadow: 0 2px 4px black;
+}
+
 .buttonBox{
   display: flex;
   height: 30px;
@@ -175,4 +214,18 @@
   background-color: rgb(58, 120, 227);
   box-shadow: 0 0 10px rgb(82, 111, 161);
   transition: 100ms;
+}
+.closeButton{
+  height: 25px;
+  width: 25px;
+  background-color: rgb(226, 152, 152);
+  color: white;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+.closeButton:hover{
+  background-color: rgb(252, 192, 192);
+  box-shadow: 0 0 10px rgb(226, 152, 152);;
 }
