@@ -13,6 +13,21 @@
   max-height: calc(100vh - 80px);
   overflow-y: auto;
 }
+.searchInput{
+  position: fixed;
+  top: 10px;
+  width: 180px;
+  left: calc(50% - 60px);
+}
+.searchResults{
+  border: 1px solid white;
+  padding: 40px;
+}
+.searchResultsTitle{
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+}
 .titleBox{
   height: 140px;
   width: 140px;
