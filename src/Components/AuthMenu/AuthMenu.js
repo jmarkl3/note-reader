@@ -72,45 +72,47 @@ function AuthMenu() {
     }
 
     return (
-    <div className='authMenu'>
-        {/* <div className='closeButton'>x</div> */}
-        <div className='authTitle'>
-            {createAccount ? 
-                "Crate Account"    
-                :
-                "Login"
-            }
-        </div>
-        <div className='authInputArea'>
-            <div>
-                <input placeholder='Email' ref={emailInput}></input>
-            </div>
-            <div>
-                <input placeholder='Password' type={"password"} ref={passInput}></input>
-            </div>
-            {createAccount &&            
-                <div>
-                    <input placeholder='Password Confirmation' ref={passInput2}></input>                    
+        <div className='authMenuContainer'>
+            <div className='authMenu'>
+                {/* <div className='closeButton'>x</div> */}
+                <div className='authTitle'>
+                    {createAccount ? 
+                        "Crate Account"    
+                        :
+                        "Login"
+                    }
                 </div>
-            }                
-            {createAccount ?                     
-                <button className='loginButton' onClick={createUser}>Create Account</button>
-                :
-                <button className='loginButton' onClick={signIn}>Login</button>                    
-            }
+                <div className='authInputArea'>
+                    <div>
+                        <input placeholder='Email' ref={emailInput}></input>
+                    </div>
+                    <div>
+                        <input placeholder='Password' type={"password"} ref={passInput}></input>
+                    </div>
+                    {createAccount &&            
+                        <div>
+                            <input placeholder='Password Confirmation' ref={passInput2}></input>                    
+                        </div>
+                    }                
+                    {createAccount ?                     
+                        <button className='loginButton' onClick={createUser}>Create Account</button>
+                        :
+                        <button className='loginButton' onClick={signIn}>Login</button>                    
+                    }
+                </div>
+                <div className='authMessage'>
+                    {convertErrorMessage(authMessage)}
+                </div>
+                <div className='authBottom'>
+                    {
+                        createAccount ?
+                        <div>Have an account? <button className='createAccountButton' onClick={()=>creatingAccount(false)}> Log In</button></div>
+                        :
+                        <div>New here? <button className='createAccountButton' onClick={()=>creatingAccount(true)}> Create an Account</button></div>
+                    }
+                </div>
+            </div>
         </div>
-        <div className='authMessage'>
-            {convertErrorMessage(authMessage)}
-        </div>
-        <div className='authBottom'>
-            {
-                createAccount ?
-                <div>Have an account? <button className='createAccountButton' onClick={()=>creatingAccount(false)}> Log In</button></div>
-                :
-                <div>New here? <button className='createAccountButton' onClick={()=>creatingAccount(true)}> Create an Account</button></div>
-            }
-        </div>
-    </div>
   )
 }
 
