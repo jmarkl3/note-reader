@@ -46,8 +46,8 @@ function Edit(props) {
             <div onClick={()=>askBeforeDelete()} >Delete</div>
             <div onClick={revert}>Revert</div>
             <div onClick={() => props.setPage("titles")}>Cancel</div>
-            <div onClick={saveAndView}>Save and View</div>
-            <div onClick={saveAndClose}>Save and Close</div>
+            <div onClick={saveAndView}>Save/View</div>
+            <div onClick={saveAndClose}>Save/Close</div>
         </div>
         <textarea defaultValue={props.noteData.content} ref={contentInput}></textarea>
         {showConfirmWindow && 
