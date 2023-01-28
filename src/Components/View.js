@@ -8,8 +8,11 @@ function View(props) {
     const lineRef = useRef(0)
     const [lineState, setLineState] = useState(0)
     const [showVideo, setShowVideo] = useState(false)
+    const [timeBetweenLines, setTimeBetweenLines] = useState(4000)
+
     const timeoutRef = useRef()
     const justPaused = useRef()
+    const customTime = useRef()
     const wordArray = useRef([])
     const numberArray = useRef([])
     const nounsArray = useRef([])
@@ -31,12 +34,19 @@ function View(props) {
     },[])
         
     function parseLine(_line){
-        // # denotes a comment
+        
+        // # denotes a comment, at the beginning means the whole line is a comment
         if(!_line || _line[0] === "#")
             return " "
 
         var tempLine = _line
-
+        // Inline comments
+        if(tempLine.includes("#")){
+            tempLine = tempLine.subString(0, tempLine.indexOf("#")) 
+        }
+        if(tempLine.includes("//")){
+            tempLine = tempLine.subString(0, tempLine.indexOf("//")) 
+        }
         while(tempLine.includes("=>")){        
             // console.log("templine includes word")    
             tempLine = tempLine.replace("=>", " arrow ")            
@@ -82,6 +92,26 @@ function View(props) {
             tempLine = tempLine.replace('_', " ")            
             c++
         }  
+        while(tempLine.includes('/')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('/', " slash ")            
+            c++
+        } 
+        while(tempLine.includes('numpy')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('numpy', " numpie ")            
+            c++
+        }
+        while(tempLine.includes('utils')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('utils', " utills ")            
+            c++
+        }
+        while(tempLine.includes('epochs')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('epochs', " epocks ")            
+            c++
+        }
 
         // Add up to 100 random words to a line
         var c = 0
@@ -116,6 +146,27 @@ function View(props) {
                 }
             }        
         }        
+
+
+
+        // Custom time tag. For some reason it affects the time after the line after this one
+        if (tempLine.includes("<t:")){
+            var timeSubstring = ""
+            var customTimeParsed = timeBetweenLines
+            // Get the substring after the <t: tag beginning
+            var beginingIndex = tempLine.indexOf("<t:") + 3
+            timeSubstring = tempLine.substring(beginingIndex, tempLine.length)
+            // Get the portion of the tag that has the number in it
+            timeSubstring = timeSubstring.substring(0, timeSubstring.indexOf(">"))
+            // Try to parse the number string into a integer that will represent miliseconds
+            try{customTimeParsed = Number.parseInt(timeSubstring)}catch{}
+            // Put it into a ref to be used by the speaking function
+            customTime.current = customTimeParsed
+        }
+        // If there is no time tag set the ref to null so the default pause time is used
+        else{
+            customTime.current = null
+        }
 
         return tempLine
     }
@@ -172,11 +223,19 @@ function View(props) {
         }
         else{
 
+            // Parse the line for diferences in written and spoken content
+            var parsedLine = parseLine(noteArray[lineRef.current])
+
+            // If there is a custom pause time
+            var pauseTime = timeBetweenLines
+            if(customTime.current)
+                pauseTime = customTime.current
+
             // Speak the current line after a pause
-            speak(parseLine(noteArray[lineRef.current])).then(()=>{
+            speak(parsedLine).then(()=>{
                 setTimeout(() => {
                     readNextLine()
-                }, 2000); 
+                }, pauseTime); 
             })
     
             // Increace the counter
@@ -255,7 +314,6 @@ function View(props) {
     function toggleVideo(){
         setShowVideo(!showVideo)
     }
-
     return (
         <div>
             <div className='noteViewTitle'>                
