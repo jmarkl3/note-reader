@@ -119,17 +119,13 @@ function View(props) {
         }
 
         // Add up to 100 random words to a line
-        var c = 0
-        while(tempLine.includes("<word>") && (c < 100)){        
+        while(tempLine.includes("<word>")){        
             // console.log("templine includes word")    
             tempLine = tempLine.replace("<word>", randomWord())            
-            c++
         }
         // Add up to 100 random numbers to a line
-        c = 0
-        while(tempLine.includes("<number>") && (c < 100)){            
-                tempLine = tempLine.replace("<number>", randomNumber())                
-            c++
+        while(tempLine.includes("<number>")){            
+            tempLine = tempLine.replace("<number>", randomNumber())                
         }
                
         // Read words from the array of chosen words if the line calls for it
@@ -167,6 +163,8 @@ function View(props) {
             try{customTimeParsed = Number.parseInt(timeSubstring)}catch{}
             // Put it into a ref to be used by the speaking function
             customTime.current = customTimeParsed
+            // Remove the time specification text
+            tempLine = tempLine.subString(0, beginingIndex)
         }
         // If there is no time tag set the ref to null so the default pause time is used
         else{
