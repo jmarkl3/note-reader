@@ -7,6 +7,7 @@ function View(props) {
     
     const lineRef = useRef(0)
     const [lineState, setLineState] = useState(0)
+    const [showVideo, setShowVideo] = useState(false)
     const timeoutRef = useRef()
     const justPaused = useRef()
     const wordArray = useRef([])
@@ -71,6 +72,16 @@ function View(props) {
             tempLine = tempLine.replace('"', " quote ")            
             c++
         }        
+        while(tempLine.includes('.')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('.', " dot ")            
+            c++
+        }  
+        while(tempLine.includes('_')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace('_', " ")            
+            c++
+        }  
 
         // Add up to 100 random words to a line
         var c = 0
@@ -241,6 +252,9 @@ function View(props) {
         pause()
         props.setPage("edit")
     }
+    function toggleVideo(){
+        setShowVideo(!showVideo)
+    }
 
     return (
         <div>
@@ -249,12 +263,26 @@ function View(props) {
             </div>
             <div className='buttonContainer'>
                 <div onClick={back}>Back</div>
-                <div onClick={restart}>Restart</div>
+                <div onClick={toggleVideo}>Video</div>
                 <div onClick={edit}>Edit</div>
                 <div onClick={pause}>Pause</div>
                 <div onClick={readNextLine}>Start</div>
             </div>
             <div className='noteLineContainer'>
+                {showVideo && 
+                    <div>
+                        <iframe 
+                            width="100%" 
+                            height="400px" 
+                            src="https://www.youtube.com/embed/wELOA2U7FPQ" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                        >
+                        </iframe>
+                    </div>
+                }
                 {
                     noteArray.map((noteLine, index) => (
                         <div className={'noteLine ' + (index == lineState ? "selectedLine" : "")} onClick={() => setPosition(index)}>
@@ -262,6 +290,7 @@ function View(props) {
                         </div>
                     ))
                 }
+                
             </div>
         </div>
     )
