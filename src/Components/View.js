@@ -164,7 +164,7 @@ function View(props) {
             // Put it into a ref to be used by the speaking function
             customTime.current = customTimeParsed
             // Remove the time specification text
-            tempLine = tempLine.subString(0, beginingIndex)
+            tempLine = tempLine.substring(0, beginingIndex - 3)
         }
         // If there is no time tag set the ref to null so the default pause time is used
         else{
