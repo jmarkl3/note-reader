@@ -99,7 +99,12 @@ function View(props) {
         } 
         while(tempLine.includes('numpy')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('numpy', " numpie ")            
+            tempLine = tempLine.replace('numpy', " num pie ")            
+            c++
+        }
+        while(tempLine.includes(',')){        
+            // console.log("templine includes word")    
+            tempLine = tempLine.replace(',', " comma ")            
             c++
         }
         while(tempLine.includes('utils')){        
