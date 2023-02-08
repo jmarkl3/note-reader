@@ -196,7 +196,7 @@ function Titles() {
                     <div className='titleSettingsButton' onClick={(e)=>dispatcher(removeItemFromFolder({itemKey: noteData.key, folderKey: folderToDisplay, event: e}))}>Move out of Folder</div>
                   </div>
                 </div>
-                <div className='titleButton' onClick={e => openAndPlay({noteData: noteData, playOnLoad: true, event: e})}>
+                <div className='titleButton' onClick={(e)=>{dispatcher(openNote({noteData: noteData, event: e, playOnLoad: true}))}}>
                 <img src={playIcon}></img>
                 </div>
               </div>

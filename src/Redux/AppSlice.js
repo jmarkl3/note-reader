@@ -37,6 +37,9 @@ export const appSlice = createSlice({
             state.page = action.payload
         },
         openNote: (state, action) => { 
+            console.log("opening note")
+            if(action.payload?.event)
+            action.payload?.event.stopPropagation()
             if(action.payload.event)    
                 action.payload.event.stopPropagation()       
             state.playOnLoad = action.payload.playOnLoad
