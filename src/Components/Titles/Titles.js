@@ -190,9 +190,9 @@ function Titles() {
                 <div className='titleButton'>
                   <img src={settingsIcon}></img>
                   <div className='titleSettings'>
-                    <div className='titleSettingsButton'>Edit</div>
+                    {/* <div className='titleSettingsButton'>Rename</div>
                     <div className='titleSettingsButton'>Delete</div>
-                    <div className='titleSettingsButton' onClick={(e)=>{dispatcher(openNote({noteData: noteData, event: e}))}}>view Lines</div>
+                    <div className='titleSettingsButton' onClick={(e)=>{dispatcher(openNote({noteData: noteData, event: e}))}}>view Lines</div> */}
                     <div className='titleSettingsButton' onClick={(e)=>dispatcher(removeItemFromFolder({itemKey: noteData.key, folderKey: folderToDisplay, event: e}))}>Move out of Folder</div>
                   </div>
                 </div>
