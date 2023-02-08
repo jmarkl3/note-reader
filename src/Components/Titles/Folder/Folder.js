@@ -3,11 +3,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import folderIcon from "../../../Images/folderIcon2.png"
 import settingsIcon from "../../../Images/settingsIconS.png"
-import { addItemToFolder, deleteFolder, setEditingFolder, updateFolderName } from '../../../Redux/AppSlice'
+import { addItemToFolder, deleteFolder, setEditingFolder, setFolderToDisplayId, updateFolderName } from '../../../Redux/AppSlice'
 
-function Folder({folderData, setFolderToDisplay}) {
+function Folder({folderData}) {
     
-    const [openFolderId, setOpenFolderId] = useState()
     const folderNameInput = useRef()
 
     const uid = useSelector(state => state.appSlice.uid)
@@ -55,8 +54,8 @@ function Folder({folderData, setFolderToDisplay}) {
         e.stopPropagation()          
         dispatcher(deleteFolder(_folderKey))
     }
-    function openFolder(_folderId){
-        setFolderToDisplay(_folderId)
+    function openFolder(_folderId){        
+        dispatcher(setFolderToDisplayId(_folderId))
     }
     // This function is called when something is dragged and dropped onto the folder
     function handleItemDrop(e){

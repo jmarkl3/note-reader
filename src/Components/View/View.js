@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+    import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {nouns} from "../../Nouns.js"
-import { setPage } from '../../Redux/AppSlice.js'
+import { loadNextNote, setPage } from '../../Redux/AppSlice.js'
 import "./View.css"
 
 function View(props) {
@@ -30,10 +30,13 @@ function View(props) {
 
     useEffect(()=>{
         
+        console.log("note data: ")
+        console.log(noteData)
         if(!noteData)
             return
+
         // Create and set the array of lines to be read based on the note content
-        noteArrayRef.current = noteData.content.split("\n")
+        noteArrayRef.current = noteData.content?.split("\n")
         setNoteArray(noteArrayRef.current)                 
         // Make an array of nouns for random word generation
         nounsArray.current = nouns.split("\n")
@@ -48,6 +51,10 @@ function View(props) {
 
     },[playOnLoad, noteData])
         
+    useEffect(()=>{
+        console.log(noteData)
+    },[noteData])
+
     function parseLine(_line){
         
         // # denotes a comment, at the beginning means the whole line is a comment
@@ -253,18 +260,21 @@ function View(props) {
             // Speak the current line after a pause
             speak(parsedLine).then(()=>{
                 setTimeout(() => {
-                    readNextLine()
+                    if(lineRef.current >= noteArrayRef.current.length){
+                        console.log("============================ loading next note ============================")
+                        lineRef.current = 0
+                        dispatcher(loadNextNote())
+                    }
+                    else {
+                        readNextLine()
+                    }
                 }, pauseTime); 
             })
     
-            console.log("increacing counter ")
             // Increace the counter
             lineRef.current = lineRef.current + 1
             setLineState(lineRef.current - 1)
-            if(lineRef.current >= noteArrayRef.current.length)
-                lineRef.current = 0
-
-            console.log("counter: "+lineRef.current)
+            
         }
 
     }    

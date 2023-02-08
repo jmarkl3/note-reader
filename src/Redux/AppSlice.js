@@ -11,6 +11,7 @@ export const appSlice = createSlice({
         noteArray: [],
         folderArray: [],
         editingFolderId: null,
+        folderToDisplayId: null,
         noteData: null,
         page: "titles", 
         playOnLoad: false,
@@ -25,7 +26,13 @@ export const appSlice = createSlice({
             state.noteArray = action.payload
         },
         setNoteData: (state, action)=>{
+            console.log("==================================================")
+            console.log("setting note data for note: "+action.payload.title)
+            console.log(action.payload.content)
+            console.log(action.payload.key)
             state.noteData = action.payload
+            console.log(state.noteData.title)
+            // state.playOnLoad = !state.playOnLoad
         },
         setFolderArray: (state, action)=>{
             state.folderArray = action.payload
@@ -204,12 +211,14 @@ export const appSlice = createSlice({
             }               
         },
         removeItemFromFolder: (state, action) => {
+            
+            if(action.payload?.event)
+                action.payload.event.stopPropagation()
+
             // This takes in action: {itemnKey: itemnKey, folderKey: folderKey}            
             if(!action.payload || !action.payload.folderKey || !action.payload.itemKey)
                 return
             
-            if(action.payload?.event)
-                action.payload.event.stopPropagation()
 
             let tempItemArray = []
             // Go to the folder the user is currently in
@@ -233,9 +242,25 @@ export const appSlice = createSlice({
         },
         clearFolder: (state, action) => {
             update(ref(state.dbRef, "noteApp/" + state.uid + "/folders/" + action.payload), {items: []})            
+        },
+        // When the user is in a folder this will load the next note in that folder
+        loadNextNote: (state, action) => {
+            // Find the folder
+            let folderOfInterest = state.folderArray.find(folder => folder.key === state.folderToDisplayId)
+            let currentIndex = folderOfInterest.items.findIndex(itemId => itemId === state.noteData.key)
+            if(currentIndex < folderOfInterest.items.length - 1)
+                currentIndex+=1
+            else
+                currentIndex=0
+            const idOfInterest = folderOfInterest.items[currentIndex]
+            const foundNote = state.noteArray.find(note => note.key === idOfInterest)
+            appSlice.caseReducers.setNoteData(state, {payload: foundNote})   
+        },
+        setFolderToDisplayId: (state, action) => {
+            state.folderToDisplayId = action.payload
         }
-    }
+    },
 })
 
-export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder} = appSlice.actions
+export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder, loadNextNote, setFolderToDisplayId} = appSlice.actions
 export default appSlice.reducer

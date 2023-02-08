@@ -7,7 +7,7 @@ import backIcon from "../../Images/backIconS.png"
 import settingsIcon from "../../Images/settingsIconS.png"
 import Folder from './Folder/Folder'
 import { useDispatch, useSelector } from 'react-redux'
-import { createNewFolder, editNote, openNote, removeItemFromFolder, setEditingFolder, setItemToAdd, setNoteData, setPage } from '../../Redux/AppSlice'
+import { createNewFolder, editNote, openNote, removeItemFromFolder, setEditingFolder, setFolderToDisplayId, setItemToAdd, setNoteData, setPage } from '../../Redux/AppSlice'
 
 function Titles() {  
   const [showSearchResults, setShowSearchResults] = useState(false)
@@ -17,9 +17,10 @@ function Titles() {
 
   const folderArray = useSelector(state => state.appSlice.folderArray)
   const noteArray = useSelector(state => state.appSlice.noteArray)
+  const folderToDisplayId = useSelector(state => state.appSlice.folderToDisplayId)  
   const [parsedFolderArray, setParsedFolderArray] = useState([])
   const [parsedNoteArray, setParsedNoteArray] = useState([])
-  const [folderToDisplay, setFolderToDisplay] = useState()
+  // const [folderToDisplay, setFolderToDisplay] = useState()
 
   const dispatcher = useDispatch()
 
@@ -104,19 +105,19 @@ function Titles() {
     
   }
   function notesFromFolder(){
-    if(!folderToDisplay)
+    if(!folderToDisplayId)
       return parsedNoteArray
     else{
       let notesToReturn = []
       parsedFolderArray.forEach(folder => {
-        if(folder.key === folderToDisplay)
+        if(folder.key === folderToDisplayId)
           notesToReturn = folder.items
       })
       return notesToReturn
     }
   }
   function foldersFromFolder(){    
-    if(!folderToDisplay)
+    if(!folderToDisplayId)
       return folderArray
     else
       return []
@@ -157,7 +158,7 @@ function Titles() {
           </div>
         :
         <div>
-          {!folderToDisplay ?
+          {!folderToDisplayId ?
           <div style={{display: "inline-block"}}>
             <div className='titleBox' onClick={(event) => dispatcher(editNote({noteData: null, event: event}))}>
               <div className='titleBoxInner newNoteBox'>
@@ -174,12 +175,12 @@ function Titles() {
             </div>
           </div>
           :
-          <div onClick={()=>setFolderToDisplay(null)} className='titleBox backBox'>
+          <div onClick={()=>dispatcher(setFolderToDisplayId(null))} className='titleBox backBox'>
             <img src={backIcon}></img>
           </div>
           }
           {foldersFromFolder().map(folderData => (
-            <Folder folderData={folderData} setFolderToDisplay={setFolderToDisplay}></Folder>
+            <Folder folderData={folderData}></Folder>
           ))}
           {notesFromFolder().map(noteData => (
             <div className='titleBox' onClick={() => dispatcher(editNote({noteData  : noteData}))} draggable={true} key={noteData.key} id={"note_" + noteData.key} onDragStart={e=>dragStart(noteData.key, e)}>
@@ -193,7 +194,7 @@ function Titles() {
                     {/* <div className='titleSettingsButton'>Rename</div>
                     <div className='titleSettingsButton'>Delete</div>
                     <div className='titleSettingsButton' onClick={(e)=>{dispatcher(openNote({noteData: noteData, event: e}))}}>view Lines</div> */}
-                    <div className='titleSettingsButton' onClick={(e)=>dispatcher(removeItemFromFolder({itemKey: noteData.key, folderKey: folderToDisplay, event: e}))}>Move out of Folder</div>
+                    <div className='titleSettingsButton' onClick={(e)=>dispatcher(removeItemFromFolder({itemKey: noteData.key, folderKey: folderToDisplayId, event: e}))}>Move out of Folder</div>
                   </div>
                 </div>
                 <div className='titleButton' onClick={(e)=>{dispatcher(openNote({noteData: noteData, event: e, playOnLoad: true}))}}>
