@@ -165,3 +165,23 @@
   .folderSettingsButton:hover{
     background-color: rgba(128, 128, 128, 0.438);
   }
+  .titleSettings{
+    height: 0;
+    overflow: hidden;
+    transition: 500ms;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 140px;
+    background-color: rgba(128, 128, 128, 0.829);
+  }
+  .titleButton:hover .titleSettings{
+    height: 140px;
+  }
+  .titleSettingsButton{
+    height: 35px;
+    line-height: 30px;    
+  }
+  .titleSettingsButton:hover{
+    background-color: rgb(192, 188, 188);
+  }

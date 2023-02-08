@@ -45,7 +45,7 @@ export const appSlice = createSlice({
             // console.log("store.dbSlice.uid")
             // console.log( store.dbSlice.uid)
         },
-        editNote: (state, action, event) => {
+        editNote: (state, action) => {
             if(action.payload.event)    
                 action.payload.event.stopPropagation() 
             
@@ -147,9 +147,20 @@ export const appSlice = createSlice({
 
         },        
         updateFolderName: (state, action) => {
-            if(!state.uid || !action.payload.key)
+            if(!state.uid || !state.editingFolderId)
                 return        
-            update(ref(state.dbRef, "noteApp/" + state.uid + "/folders/" + action.payload.key), {name: action.payload.name})
+
+            if(action.payload?.event)
+                action.payload.event.stopPropagation()
+
+            let inputElement = document.getElementById(state.editingFolderId+"nameInput")
+            let newName = "New Folder"            
+            if(inputElement)
+                newName = inputElement.value
+            if(!newName || newName === "")        
+                newName = "New Folder"            
+            
+            update(ref(state.dbRef, "noteApp/" + state.uid + "/folders/" + state.editingFolderId), {name: newName})
             state.editingFolderId = null
 
         },
@@ -185,8 +196,37 @@ export const appSlice = createSlice({
                 update(ref(state.dbRef, "noteApp/" + state.uid + "/folders/" + action.payload), {items: tempArray})
             }
             else{
+                // This should never happen but just in case it will log it
                 console.log(state.itemToAdd + " is already in the folder")
             }               
+        },
+        removeItemFromFolder: (state, action) => {
+            // This takes in action: {itemnKey: itemnKey, folderKey: folderKey}            
+            if(!action.payload || !action.payload.folderKey || !action.payload.itemKey)
+                return
+            
+            if(action.payload?.event)
+                action.payload.event.stopPropagation()
+
+            let tempItemArray = []
+            // Go to the folder the user is currently in
+            state.folderArray.forEach(folder => {
+                if(folder.key === action.payload.folderKey){
+                    console.log("found folder: " + folder.name+" "+folder.key)
+                    // Look through the items in that folder
+                    for(var i=0; i<folder.items.length; i++){
+                        // If the item id is found remove it from the folder it was found in
+                        if(action.payload.itemKey === folder.items[i]){
+                            tempItemArray = [...folder.items]
+                            tempItemArray.splice(i, 1)
+                            console.log( action.payload.itemKey +" was found in "+folder.name)
+                            console.log("New folder item array:")
+                            console.log(tempItemArray)
+                            update(ref(state.dbRef, "noteApp/" + state.uid + "/folders/" + folder.key), {items: tempItemArray})
+                        }
+                    }
+                }
+            })               
         },
         clearFolder: (state, action) => {
             update(ref(state.dbRef, "noteApp/" + state.uid + "/folders/" + action.payload), {items: []})            
@@ -194,5 +234,5 @@ export const appSlice = createSlice({
     }
 })
 
-export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder} = appSlice.actions
+export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder} = appSlice.actions
 export default appSlice.reducer

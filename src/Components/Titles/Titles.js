@@ -4,13 +4,12 @@ import playIcon from "../../Images/playIconS.png"
 import editIcon from "../../Images/editIconS.png"
 import folderIcon from "../../Images/folderIcon2.png"
 import backIcon from "../../Images/backIconS.png"
+import settingsIcon from "../../Images/settingsIconS.png"
 import Folder from './Folder/Folder'
 import { useDispatch, useSelector } from 'react-redux'
-import { createNewFolder, editNote, openNote, setEditingFolder, setItemToAdd, setNoteData, setPage } from '../../Redux/AppSlice'
-import { push, ref, set } from 'firebase/database'
+import { createNewFolder, editNote, openNote, removeItemFromFolder, setEditingFolder, setItemToAdd, setNoteData, setPage } from '../../Redux/AppSlice'
 
-function Titles(props) {  
-  const [filteredNoteArray, setFilteredNoteArray] = useState()
+function Titles() {  
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [titleMatches, setTitleMatches] = useState()
   const [contentMatches, setContentMatches] = useState()
@@ -23,9 +22,6 @@ function Titles(props) {
   const [folderToDisplay, setFolderToDisplay] = useState()
 
   const dispatcher = useDispatch()
-
-  const dbRef = useSelector(state => state.appSlice.dbRef)
-  const uid = useSelector(state => state.appSlice.uid)
 
   useEffect(()=>{
     placeNotesInFolders()
@@ -186,13 +182,19 @@ function Titles(props) {
             <Folder folderData={folderData} setFolderToDisplay={setFolderToDisplay}></Folder>
           ))}
           {notesFromFolder().map(noteData => (
-            <div className='titleBox' onClick={() => dispatcher(openNote({noteData  : noteData}))} draggable={true} key={noteData.key} id={"note_" + noteData.key} onDragStart={e=>dragStart(noteData.key, e)}>
+            <div className='titleBox' onClick={() => dispatcher(editNote({noteData  : noteData}))} draggable={true} key={noteData.key} id={"note_" + noteData.key} onDragStart={e=>dragStart(noteData.key, e)}>
               <div className='titleBoxInner'>
                 {noteData.title}              
               </div>
               <div className='titleButtonContainer'>
-                <div className='titleButton' onClick={(event) => dispatcher(editNote({noteData: noteData, event: event}))}>
-                  <img src={editIcon}></img>
+                <div className='titleButton'>
+                  <img src={settingsIcon}></img>
+                  <div className='titleSettings'>
+                    <div className='titleSettingsButton'>Edit</div>
+                    <div className='titleSettingsButton'>Delete</div>
+                    <div className='titleSettingsButton' onClick={(e)=>{dispatcher(openNote({noteData: noteData, event: e}))}}>view Lines</div>
+                    <div className='titleSettingsButton' onClick={(e)=>dispatcher(removeItemFromFolder({itemKey: noteData.key, folderKey: folderToDisplay, event: e}))}>Move out of Folder</div>
+                  </div>
                 </div>
                 <div className='titleButton' onClick={e => openAndPlay({noteData: noteData, playOnLoad: true, event: e})}>
                 <img src={playIcon}></img>

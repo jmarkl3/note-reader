@@ -9,7 +9,7 @@ import TopNav from './Components/TopNav/TopNav';
 import { onAuthStateChanged } from 'firebase/auth';
 import AuthMenu from './Components/AuthMenu/AuthMenu';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFolderArray, setNoteArray, setNoteData, setPage, initializeAppSlice, updateUid } from './Redux/AppSlice';
+import { setFolderArray, setNoteArray, setNoteData, setPage, initializeAppSlice, updateUid, updateFolderName } from './Redux/AppSlice';
 import { cosineWindow } from '@tensorflow/tfjs';
 
 /*
@@ -80,6 +80,7 @@ function App() {
   // This runs on start and initializes the firebase setup in appSlice
   useEffect(()=>{
     dispatcher(initializeAppSlice())  
+    keyPressEventSetup()
   },[])
 
   // Rhis will run when the firebase setup action gets an auth object
@@ -98,6 +99,13 @@ function App() {
     loadFolders()
 
   },[uid])
+
+  function keyPressEventSetup(){
+    window.addEventListener("keydown", e => {
+      if(e.key == "Enter")
+        dispatcher(updateFolderName())
+    })
+  }
 
   function authListenerSetup(){
     onAuthStateChanged(auth, userSnap => {
