@@ -1,29 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {nouns} from "../Nouns.js"
+import { useDispatch, useSelector } from 'react-redux'
+import {nouns} from "../../Nouns.js"
+import { setPage } from '../../Redux/AppSlice.js'
+import "./View.css"
 
 function View(props) {
   
     const [noteArray, setNoteArray] = useState([])
     
+    const noteArrayRef = useRef([])
     const lineRef = useRef(0)
     const [lineState, setLineState] = useState(0)
     const [showVideo, setShowVideo] = useState(false)
     const [timeBetweenLines, setTimeBetweenLines] = useState(4000)
-
+    const noteData = useSelector(state => state.appSlice.noteData)
+    
     const timeoutRef = useRef()
     const justPaused = useRef()
     const customTime = useRef()
     const wordArray = useRef([])
     const numberArray = useRef([])
     const nounsArray = useRef([])
+    
+    const dispatcher = useDispatch()
 
     // git commit -a -m "updated package.json for correct homepage, updated word array functionality"
 
+    const playOnLoad = useSelector(state => state.appSlice.playOnLoad)
+
     useEffect(()=>{
         
+        if(!noteData)
+            return
         // Create and set the array of lines to be read based on the note content
-        setNoteArray(props.noteData.content.split("\n"))                 
-        
+        noteArrayRef.current = noteData.content.split("\n")
+        setNoteArray(noteArrayRef.current)                 
         // Make an array of nouns for random word generation
         nounsArray.current = nouns.split("\n")
 
@@ -31,7 +42,11 @@ function View(props) {
         //     console.log(event)
         // })
 
-    },[])
+        lineRef.current = 0
+        if(playOnLoad)
+            readNextLine()                        
+
+    },[playOnLoad, noteData])
         
     function parseLine(_line){
         
@@ -209,9 +224,9 @@ function View(props) {
         return newNumber
     }
     function readNextLine(){
-        console.log("reading line")
+
         // If there is no note array return
-        if(!Array.isArray(noteArray) || noteArray.length == 0)
+        if(!Array.isArray(noteArrayRef.current) || noteArrayRef.current.length == 0)
             return
 
         // If the note was paused this will resume it
@@ -227,7 +242,8 @@ function View(props) {
         else{
 
             // Parse the line for diferences in written and spoken content
-            var parsedLine = parseLine(noteArray[lineRef.current])
+            var parsedLine = parseLine(noteArrayRef.current[lineRef.current])
+            console.log("reading line " +lineRef.current+": "+ parsedLine)
 
             // If there is a custom pause time
             var pauseTime = timeBetweenLines
@@ -241,12 +257,14 @@ function View(props) {
                 }, pauseTime); 
             })
     
+            console.log("increacing counter ")
             // Increace the counter
             lineRef.current = lineRef.current + 1
             setLineState(lineRef.current - 1)
-            if(lineRef.current >= noteArray.length)
+            if(lineRef.current >= noteArrayRef.current.length)
                 lineRef.current = 0
 
+            console.log("counter: "+lineRef.current)
         }
 
     }    
@@ -308,11 +326,11 @@ function View(props) {
     }
     function back(){
         pause()
-        props.setPage("titles")
+        dispatcher(setPage("titles"))        
     }
     function edit(){
         pause()
-        props.setPage("edit")
+        dispatcher(setPage("edit"))        
     }
     function toggleVideo(){
         setShowVideo(!showVideo)
@@ -320,7 +338,7 @@ function View(props) {
     return (
         <div>
             <div className='noteViewTitle'>                
-                {props.noteData.title}
+                {noteData.title}
             </div>
             <div className='buttonContainer'>
                 <div onClick={back}>Back</div>

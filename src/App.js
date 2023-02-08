@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
-import Edit from './Components/Edit';
-import Titles from './Components/Titles';
+import Edit from './Components/Edit/Edit';
+import Titles from './Components/Titles/Titles';
 import { initializeApp } from 'firebase/app'
 import { getDatabase, set, update, ref, push, onValue } from 'firebase/database'
-import View from './Components/View';
+import View from './Components/View/View';
 import TopNav from './Components/TopNav/TopNav';
-import {auth, dbRef} from "./Firebase.js"
 import { onAuthStateChanged } from 'firebase/auth';
 import AuthMenu from './Components/AuthMenu/AuthMenu';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFolderArray, setNoteArray, setNoteData, setPage, initializeAppSlice, updateUid } from './Redux/AppSlice';
+import { cosineWindow } from '@tensorflow/tfjs';
 
 /*
 
@@ -63,24 +65,46 @@ function App() {
 
   // Variables, Init, and Setup
   // #region
-  const [page, setPage] = useState("titles")
+  // const [page, setPage] = useState("titles")
+  // const [noteData, setNoteData] = useState(null)  
+  const [folderArray, setFolderArrayState] = useState([])
+  const [editingFolder, setEditingFolder] = useState()
 
-  const [noteData, setNoteData] = useState(null)
-  const [noteArray, setNoteArray] = useState([])
-  const [uid, setUid] = useState(null)
+  const dispatcher = useDispatch()
+  const noteData = useSelector(state => state.appSlice.noteData)
+  const page = useSelector(state => state.appSlice.page)
+  const auth = useSelector(state => state.appSlice.auth)
+  const dbRef = useSelector(state => state.appSlice.dbRef)
+  const uid = useSelector(state => state.appSlice.uid)
   
+  // This runs on start and initializes the firebase setup in appSlice
+  useEffect(()=>{
+    dispatcher(initializeAppSlice())  
+  },[])
 
-  useEffect(() => {
-    firebaseSetup()
+  // Rhis will run when the firebase setup action gets an auth object
+  useEffect(() => {      
+    if(!auth)
+      return
+    authListenerSetup()
+
+  }, [auth])
+
+  // This will run when/if the auth listener gets a user id
+  useEffect(()=>{
+    if(!uid)
+      return
     loadNotes()
-  }, [uid])
-  
+    loadFolders()
 
+  },[uid])
 
-  function firebaseSetup(){
+  function authListenerSetup(){
     onAuthStateChanged(auth, userSnap => {
-      setUid(userSnap?.uid)
+      console.log("fond user with id "+userSnap.uid)
+      dispatcher(updateUid(userSnap?.uid))
     })
+
   }
   
   // #endregion
@@ -91,57 +115,48 @@ function App() {
   function displayPage(){
     if(page == "edit")
         return (        
-          <Edit
-            saveNote={saveNote}
-            deleteNote={deleteNote}
-            noteData={noteData}
-            setPage={setPage}
-          ></Edit>
+          <Edit></Edit>
         );
     if(page == "titles")
       return (        
-        <Titles
-          openNote={openNote}
-          noteArray={noteArray}
-          setPage={setPage}
-          editNote={editNote}
-        ></Titles>
+        <Titles></Titles>
       );
     if(page == "view")
       return (        
-        <View
-          setPage={setPage}
-          noteData={noteData}
-        ></View>
+        <View></View>
       );
   }
 
-  function openNote(_noteData){
-    
-    if(!_noteData)
-      return
+  // function playNote(_noteData, event){
+  //   event.stopPropagation()
+  //   openNote(_noteData, true)
+  // }
+  // function openNote(_noteData, _playOnOpen){
+
+  //   if(!_noteData)
+  //     return
         
-    setNoteData(_noteData)
+  //   // playOnOpen.current = _playOnOpen
+    
+  //   dispatcher(setNoteData(_noteData))
+  //   dispatcher(setPage("view"))
+    
+  // }
 
-    setPage("view")
+  // function editNote(_noteData, _event){
 
-  }
+  //   _event.stopPropagation()
 
-  function editNote(_noteData, _event){
-
-    _event.stopPropagation()
-
-    if(!_noteData)
-      setNoteData({
-        key: null,
-        title: "New Note",
-        content: ""
-      })
-    else
-      setNoteData(_noteData)
-
-      setPage("edit")
-  }
+  //   if(!_noteData)
+  //     dispatcher(setNoteData({
+  //       key: null,
+  //       title: "New Note",
+  //       content: ""
+  //     }))
+  //   else
+  //     dispatcher(setNoteData(_noteData))
+  //     dispatcher(setPage("edit"))
+  // }
   
     // #endregion
 
@@ -153,16 +168,16 @@ function App() {
       return
     onValue(ref(dbRef, "noteApp/" + uid + "/notes/"), snap => {
       var tempArray = []
-      for(var index in snap.val()){
-        var tempNoteData = snap.val()[index]
-        
+      snap.forEach(snapChild => {
         tempArray.push({
-          key: index,
-          title: tempNoteData.title,
-          content: tempNoteData.content,
+          key: snapChild.key,
+          title: snapChild.val().title,
+          content: snapChild.val().content,
         })
-      }
-      setNoteArray(tempArray)
+      })      
+      setTimeout(() => {
+        dispatcher(setNoteArray(tempArray))        
+      }, (100));
     })
   }
   function loadUserSettings(){
@@ -188,60 +203,85 @@ function App() {
     })
   }
 
-  function transferNotes(){
-    if(!noteArray || !Array.isArray(noteArray) || noteArray.length == 0)
-      return
-    console.log("transferring note array: ")
-    console.log(noteArray)
-    var tempDataObject = {}
-    noteArray.forEach(item => {
-      tempDataObject[item.key] = {
-        title: item.title,
-        content: item.content,
-      }
-    })
-    console.log(tempDataObject)
-    set(ref(dbRef, "noteApp/" + uid + "/notes/"), tempDataObject)
+  // function transferNotes(){
+  //   // if(!noteArray || !Array.isArray(noteArray) || noteArray.length == 0)
+  //   //   return
+  //   // console.log("transferring note array: ")
+  //   // console.log(noteArray)
+  //   // var tempDataObject = {}
+  //   // noteArray.forEach(item => {
+  //   //   tempDataObject[item.key] = {
+  //   //     title: item.title,
+  //   //     content: item.content,
+  //   //   }
+  //   // })
+  //   // console.log(tempDataObject)
+  //   // set(ref(dbRef, "noteApp/" + uid + "/notes/"), tempDataObject)
     
-  }
-  function saveNote(_noteData){    
+  // }
+  // function saveNote(_noteData){    
 
-    if(_noteData.key)
-      updateNote(_noteData)
-    else
-      saveNewNote(_noteData)
+  //   if(_noteData.key)
+  //     updateNote(_noteData)
+  //   else
+  //     saveNewNote(_noteData)
 
-  }
-  function saveNewNote(_noteData){
+  // }
+  // function saveNewNote(_noteData){
+  //   if(!uid)
+  //     return
+
+  //   var newRef = push(ref(dbRef, "noteApp/"+uid+"/notes/"))
+  //   set(newRef, _noteData)
+
+  //   // Put it in state in case user presses save and view
+  //   var newNoteData = _noteData
+  //   newNoteData.key = newRef.key
+  //   dispatcher(setNoteData(newNoteData))    
+
+  // }
+  // function updateNote(_noteData){
+  //   if(!uid)
+  //     return
+
+  //   set(ref(dbRef, "noteApp/" + uid + "/notes/" + _noteData.key), _noteData)
+
+  //   // Put it in state in case user presses save and view
+  //   dispatcher(setNoteData(_noteData))
+    
+
+  // }
+  // function deleteNote(_noteData){
+  //   if(!uid)
+  //     return
+
+  //   set(ref(dbRef, "noteApp/" + uid + "/notes/" + _noteData.key), null)
+  //   dispatcher(setPage("titles"))
+  // }
+
+  // Folders
+  function loadFolders(){
     if(!uid)
       return
-
-    var newRef = push(ref(dbRef, "noteApp/"+uid+"/notes/"))
-    set(newRef, _noteData)
-
-    // Put it in state in case user presses save and view
-    var newNoteData = _noteData
-    newNoteData.key = newRef.key
-    setNoteData(newNoteData)
-
+    onValue(ref(dbRef, "noteApp/" + uid + "/folders/"), snap => {
+      var tempArray = []
+      snap.forEach(snapChild => {
+        let folderValues = snapChild.val()
+        tempArray.push({
+          key: snapChild.key,
+          name: folderValues.name,
+          items: folderValues.items,
+        })
+      })      
+      console.log("Folder Array")
+      console.log(tempArray)
+      setTimeout(()=>{
+        dispatcher(setFolderArray(tempArray))
+      }, 100)
+    })
   }
-  function updateNote(_noteData){
-    if(!uid)
-      return
 
-    set(ref(dbRef, "noteApp/" + uid + "/notes/" + _noteData.key), _noteData)
-
-    // Put it in state in case user presses save and view
-    setNoteData(_noteData)
-
-  }
-  function deleteNote(_noteData){
-    if(!uid)
-      return
-
-    set(ref(dbRef, "noteApp/" + uid + "/notes/" + _noteData.key), null)
-    setPage("titles")
-  }
+  
   // #endregion  
 
   return (

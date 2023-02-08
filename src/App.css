@@ -8,70 +8,7 @@
   overflow: hidden;
   box-sizing: border-box;  
 }
-.titlesContainer{  
-  padding-top: 20px;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-}
-.searchInput{
-  position: fixed;
-  top: 10px;
-  width: 180px;
-  left: calc(50% - 60px);
-}
-.searchResults{
-  border: 1px solid white;
-  padding: 40px;
-}
-.searchResultsTitle{
-  font-size: 20px;
-  color: white;
-  font-weight: bold;
-}
-.titleBox{
-  height: 140px;
-  width: 140px;
-  background-color: gray;
-  text-align: center;  
-  display: inline-block;  
-  cursor: pointer;  
-  margin: 10px;
-  vertical-align: top;
-  position: relative;
-  box-shadow: 0 0 10px rgb(24, 23, 23);
-  border: 1px solid rgb(160, 160, 160);
-  box-sizing: border-box;
-  transition: 500ms;
-  background-image: radial-gradient(rgba(128, 128, 128, 0), rgba(85, 85, 85, 0.705));
-}
-.titleBox:hover{
-  background-color: rgb(155, 151, 151);
-  box-shadow: 0 0 10px gold;
-  transform: scale(1.02);
-}
-.titleBoxInner{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-.newNoteBox{
-  background-image: url('./Images/cubeField.gif');
-  background-size: contain;
-  color: white;
-}
-.newNoteBox div{
-  margin-bottom: 10px;
-  filter: opacity(0);
-  transition: 1000ms;
-  font-size: 2px; 
-}
-.newNoteBox:hover div{
-  margin-bottom: 0px;
-  filter: opacity(1); 
-  font-size: 16px; 
-}
+
 .titleBoxInner img{
   height: 100%;
   width: 100%;
@@ -80,43 +17,7 @@
   left: 0;
   z-index: -1;
 }
-.edit{
-  /* height: 90vh;
-  width: 90vw;
-  margin: 5vh 5vw;
-  background-color: gray; */
-  position: relative;
-  border-radius: 2px;
-}
-.edit input{
-  width: 96%;
-  margin: 5px auto;  
-  border: none;
-  box-sizing: border-box;
-  outline: none;
-  height: 30px;
-  padding: 5px;
-  background-color: rgb(188, 188, 188);
-  border-radius: 2px;
-  box-shadow: 0 0 5px rgb(54, 54, 54);
-  box-shadow: 0px 4px 6px rgb(0, 0, 0) inset;
-  text-align: center;
-  font-weight: 800;
-}
-.edit textarea{
-  min-width: 96%;
-  max-width: 96%;
-  height: calc(100vh - 145px);
-  margin: 5px auto;  
-  border: none;
-  box-sizing: border-box;
-  outline: none;
-  min-height: 200px;
-  padding: 10px;
-  background-color: rgb(188, 188, 188);
-  border-radius: 2px;
-  box-shadow: 0px 4px 6px rgb(0, 0, 0) inset;
-}
+
 .confirmWindow{
   position: fixed;    
   width: 400px;
@@ -167,50 +68,6 @@
 }
 .button:hover{
   background-color: rgb(142, 142, 142);
-  box-shadow: 0 0 10px gold;
-}
-
-.noteViewTitle{
-  width: 96%;
-  margin: 5px auto 10px auto;
-  background-color: gray;
-  height: 40px;
-  line-height: 40px;
-  border-radius: 2px;
-  box-shadow: 0 0 5px rgb(54, 54, 54);
-}
-.noteLineContainer{
-  width: 96%;
-  margin: 5px auto;
-  overflow-y: auto;
-  height: calc(100vh - 160px);
-}
-.noteLine{
-  width: 100%;
-  margin: 3px 0;
-  background-color: gray;
-  transition: 1000ms;
-  border-radius: 2px;
-  box-shadow: 0 0 5px rgb(54, 54, 54);
-}
-.noteLine:hover{
-  background-color: rgb(157, 157, 157);
-  transition: 100ms;
-}
-.selectedLine{
-  background-color: rgb(157, 157, 157);
-  transition: 100ms;
-}
-.editButton{
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 40px;
-  line-height: 40px;
-}
-.editButton:hover{
-  background-color: rgb(180, 179, 179);
   box-shadow: 0 0 10px gold;
 }
 .buttonContainer{

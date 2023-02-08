@@ -41,7 +41,7 @@ input{
     height: 30px;
     box-sizing: border-box;
     padding: 5px 10px;
-    box-shadow: 0 2px 4px black;
+    box-shadow: 0 2px 4px black inset;
 }
 .loginButton{
     width: 100%;

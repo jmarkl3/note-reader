@@ -1,38 +1,41 @@
 import React, { useState } from 'react'
 import { useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteNote, openNote, saveNote, setNoteData, setPage } from '../../Redux/AppSlice'
+import "./Edit.css"
 
 function Edit(props) {
 
     var titleInput = useRef()
     var contentInput = useRef()
     const [showConfirmWindow, setShowConfirmWindow] = useState(false)
+    const noteData = useSelector(state => state.appSlice.noteData)
+    const dispatcher = useDispatch()
 
     function saveAndClose(){
-
+        console.log("in save an close function")
         // save and close
-        props.saveNote({
-            key: props.noteData.key,
+        dispatcher(saveNote({
+            key: noteData.key,
             title: titleInput.current.value,
             content: contentInput.current.value,
-        })
-        props.setPage("titles")
-
+        }))
+        dispatcher(setPage("titles"))        
     }
     function saveAndView(){
 
         // save and close
-        props.saveNote({
-            key: props.noteData.key,
+        dispatcher(saveNote({
+            key: noteData.key,
             title: titleInput.current.value,
             content: contentInput.current.value,
-        })
-        props.setPage("view")
-
+        }))
+        dispatcher(setPage("view"))   
     }
     function revert(){
         
-        titleInput.value = props.noteData.title
-        contentInput.value = props.noteData.content
+        titleInput.value = noteData.title
+        contentInput.value = noteData.content
 
     }
     function askBeforeDelete(){
@@ -41,21 +44,21 @@ function Edit(props) {
 
   return (
     <div className='edit'>        
-        <input defaultValue={props.noteData.title} ref={titleInput}></input>
+        <input defaultValue={noteData.title} ref={titleInput}></input>
         <div className='buttonContainer'>
             <div onClick={()=>askBeforeDelete()} >Delete</div>
             <div onClick={revert}>Revert</div>
-            <div onClick={() => props.setPage("titles")}>Cancel</div>
+            <div onClick={() => dispatcher(setPage("titles"))}>Cancel</div>
             <div onClick={saveAndView}>Save/View</div>
             <div onClick={saveAndClose}>Save/Close</div>
         </div>
-        <textarea defaultValue={props.noteData.content} ref={contentInput}></textarea>
+        <textarea defaultValue={noteData.content} ref={contentInput}></textarea>
         {showConfirmWindow && 
             <div className='confirmWindow'>
                 <div className='confirmWindowTitle'>
-                    Perminataly delete {props.noteData.title}?
+                    Perminataly delete {noteData.title}?
                 </div>
-                <button onClick={() => props.deleteNote(props.noteData)} className={"confirmButton"}>Delete</button>
+                <button onClick={() => dispatcher(deleteNote(noteData.key))} className={"confirmButton"}>Delete</button>
                 <button onClick={()=>setShowConfirmWindow(false)} className="confirmButton">Cancle</button>
 
             </div>

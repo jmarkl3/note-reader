@@ -1,0 +1,167 @@
+.titlesContainer{  
+    padding-top: 20px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+  .searchInput{
+    position: fixed;
+    top: 10px;
+    width: 180px;
+    left: calc(50% - 60px);
+  }
+  .searchResults{
+    border: 1px solid white;
+    padding: 40px;
+  }
+  .searchResultsTitle{
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+  }
+  .titleBox{
+    height: 140px;
+    width: 140px;
+    background-color: gray;
+    text-align: center;  
+    display: inline-block;  
+    cursor: pointer;  
+    margin: 10px;
+    vertical-align: top;
+    position: relative;
+    box-shadow: 0 0 10px rgb(24, 23, 23);
+    border: 1px solid rgb(160, 160, 160);
+    box-sizing: border-box;
+    transition: 500ms;
+    background-image: radial-gradient(rgba(128, 128, 128, 0), rgba(85, 85, 85, 0.705));
+  }
+  .backBox img{
+    height: 100%;
+    width: 100%;
+  }
+
+  .titleBox:hover{
+    background-color: rgb(155, 151, 151);
+    box-shadow: 0 0 10px gold;
+    transform: scale(1.02);
+  }
+  .titleBoxInner{
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+    height: 100%;
+    width: 100%;    
+    padding-top: 30px;
+    font-weight: 500;
+  }
+  
+.newNoteBox{
+    background-image: url('../../Images/cubeField.gif');
+    background-size: contain;
+    color: white;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .newNoteBox div{
+    margin-bottom: 10px;
+    filter: opacity(0);
+    transition: 1000ms;
+    font-size: 2px; 
+  }
+  .newNoteBox:hover div{
+    margin-bottom: 0px;
+    filter: opacity(1); 
+    font-size: 16px; 
+  }
+  .newFolder{
+    background-color: rgba(128, 128, 128, 0);
+    background-image: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 10px;
+    color: white;
+  }
+  .newFolder:hover{
+    background-color: rgba(128, 128, 128, 0);
+    box-shadow: 0 0 0 rgba(128, 128, 128, 0.514);
+    transform: scale(1.05);
+  }
+  .newFolderInner{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+  .newFolderInner input{
+    text-align: center;
+    width: 80%;
+  }
+  .newFolder img{
+    height: 100%;
+    width: 100%;
+  }
+  .titleButtonContainer{
+    position: absolute;
+    bottom: -1px;
+    width: 100%;
+  }
+  .titleButton{
+    width: 100%;
+    width: 50%;    
+    height: 50px;
+    line-height: 40px;
+    box-sizing: border-box;
+    display: inline-block;
+    padding-top: 10px;
+    box-sizing: border-box;
+  }
+  .titleButton img{
+    height: 80%;    
+  }
+  .titleButton:hover{
+    background-color: rgba(180, 179, 179, 0.425);
+    box-shadow: 0 0 10px gold;
+  }
+  .settingsGear{
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    height: 40px;
+    width: 40px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 50%;
+  }
+  .settingsGear:hover{
+    box-shadow: 0 0 10px gold;
+  }
+  .settingsGear img{
+    height: 100%;
+    width: 100%;
+  }
+  .folderSettings{    
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 0;
+    width: 0;
+    background-color: rgba(63, 60, 60, 0.801);
+    transition: 500ms;
+    overflow: hidden;
+  }
+  .settingsGear:hover .folderSettings{    
+    min-height: 70px;
+    width: 125px;    
+  }
+  .folderSettingsButton{
+    border-bottom: 1px solid gray;
+    height: 35px;
+    line-height: 25px;
+    transition: 500ms;
+  }
+  .folderSettingsButton:hover{
+    background-color: rgba(128, 128, 128, 0.438);
+  }

@@ -1,0 +1,32 @@
+
+.noteViewTitle{
+    width: 96%;
+    margin: 5px auto 10px auto;
+    background-color: gray;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgb(54, 54, 54);
+  }
+  .noteLineContainer{
+    width: 96%;
+    margin: 5px auto;
+    overflow-y: auto;
+    height: calc(100vh - 160px);
+  }
+  .noteLine{
+    width: 100%;
+    margin: 3px 0;
+    background-color: gray;
+    transition: 1000ms;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgb(54, 54, 54);
+  }
+  .noteLine:hover{
+    background-color: rgb(157, 157, 157);
+    transition: 100ms;
+  }
+  .selectedLine{
+    background-color: rgb(157, 157, 157);
+    transition: 100ms;
+  }
