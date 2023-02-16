@@ -14,7 +14,7 @@ function View(props) {
     const [showVideo, setShowVideo] = useState(false)
     const [timeBetweenLines, setTimeBetweenLines] = useState(4000)
     const noteData = useSelector(state => state.appSlice.noteData)
-    
+    const autoPlay = useSelector(state => state.autoPlay)
     const timeoutRef = useRef()
     const justPaused = useRef()
     const customTime = useRef()
@@ -30,8 +30,6 @@ function View(props) {
 
     useEffect(()=>{
         
-        console.log("note data: ")
-        console.log(noteData)
         if(!noteData)
             return
 
@@ -61,93 +59,95 @@ function View(props) {
         if(!_line || _line[0] === "#")
             return " "
 
+        console.log(_line)
+
         var tempLine = _line
         // Inline comments
-        if(tempLine.includes("#")){
-            tempLine = tempLine.subString(0, tempLine.indexOf("#")) 
+        if(tempLine?.includes("#")){
+            tempLine = tempLine?.subString(0, tempLine?.indexOf("#")) 
         }
-        if(tempLine.includes("//")){
-            tempLine = tempLine.subString(0, tempLine.indexOf("//")) 
+        if(tempLine?.includes("//")){
+            tempLine = tempLine?.replace("//", "") 
         }
-        while(tempLine.includes("=>")){        
+        while(tempLine?.includes("=>")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace("=>", " arrow ")            
+            tempLine = tempLine?.replace("=>", " arrow ")            
             c++
         }
-        while(tempLine.includes("{")){        
+        while(tempLine?.includes("{")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace("{", " curley ")            
+            tempLine = tempLine?.replace("{", " curley ")            
             c++
         }
-        while(tempLine.includes("(")){        
+        while(tempLine?.includes("(")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace("(", " round ")            
+            tempLine = tempLine?.replace("(", " round ")            
             c++
         }   
-        while(tempLine.includes("[")){        
+        while(tempLine?.includes("[")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace("[", " square ")            
+            tempLine = tempLine?.replace("[", " square ")            
             c++
         }                
-        while(tempLine.includes(",")){        
+        while(tempLine?.includes(",")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace(",", " comma ")            
+            tempLine = tempLine?.replace(",", " comma ")            
             c++
         }        
-        while(tempLine.includes("'")){        
+        while(tempLine?.includes("'")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace("'", " quote ")            
+            tempLine = tempLine?.replace("'", " quote ")            
             c++
         }
-        while(tempLine.includes('"')){        
+        while(tempLine?.includes('"')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('"', " quote ")            
+            tempLine = tempLine?.replace('"', " quote ")            
             c++
         }        
-        while(tempLine.includes('.')){        
+        while(tempLine?.includes('.')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('.', " dot ")            
+            tempLine = tempLine?.replace('.', " dot ")            
             c++
         }  
-        while(tempLine.includes('_')){        
+        while(tempLine?.includes('_')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('_', " ")            
+            tempLine = tempLine?.replace('_', " ")            
             c++
         }  
-        while(tempLine.includes('/')){        
+        while(tempLine?.includes('/')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('/', " slash ")            
+            tempLine = tempLine?.replace('/', " slash ")            
             c++
         } 
-        while(tempLine.includes('numpy')){        
+        while(tempLine?.includes('numpy')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('numpy', " num pie ")            
+            tempLine = tempLine?.replace('numpy', " num pie ")            
             c++
         }
-        while(tempLine.includes(',')){        
+        while(tempLine?.includes(',')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace(',', " comma ")            
+            tempLine = tempLine?.replace(',', " comma ")            
             c++
         }
-        while(tempLine.includes('utils')){        
+        while(tempLine?.includes('utils')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('utils', " utills ")            
+            tempLine = tempLine?.replace('utils', " utills ")            
             c++
         }
-        while(tempLine.includes('epochs')){        
+        while(tempLine?.includes('epochs')){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace('epochs', " epocks ")            
+            tempLine = tempLine?.replace('epochs', " epocks ")            
             c++
         }
 
         // Add up to 100 random words to a line
-        while(tempLine.includes("<word>")){        
+        while(tempLine?.includes("<word>")){        
             // console.log("templine includes word")    
-            tempLine = tempLine.replace("<word>", randomWord())            
+            tempLine = tempLine?.replace("<word>", randomWord())            
         }
         // Add up to 100 random numbers to a line
-        while(tempLine.includes("<number>")){            
-            tempLine = tempLine.replace("<number>", randomNumber())                
+        while(tempLine?.includes("<number>")){            
+            tempLine = tempLine?.replace("<number>", randomNumber())                
         }
                
         // Read words from the array of chosen words if the line calls for it
@@ -155,7 +155,7 @@ function View(props) {
             // Support reading up to 100 words back
             for(var c = 0; c < 100; c++){
                 if(wordArray.current.length > (c)){                    
-                    tempLine = tempLine.replace("<word-" + (c+1) + ">", wordArray.current[c])    
+                    tempLine = tempLine?.replace("<word-" + (c+1) + ">", wordArray.current[c])    
                 }
             }        
         }
@@ -165,7 +165,7 @@ function View(props) {
             // Support reading up to 100 words back
             for(var c = 0; c < 100; c++){
                 if(numberArray.current.length > (c)){                    
-                    tempLine = tempLine.replace("<word-" + (c+1) + ">", numberArray.current[c])    
+                    tempLine = tempLine?.replace("<word-" + (c+1) + ">", numberArray.current[c])    
                 }
             }        
         }        
@@ -173,12 +173,12 @@ function View(props) {
 
 
         // Custom time tag. For some reason it affects the time after the line after this one
-        if (tempLine.includes("<t:")){
+        if (tempLine?.includes("<t:")){
             var timeSubstring = ""
             var customTimeParsed = timeBetweenLines
             // Get the substring after the <t: tag beginning
-            var beginingIndex = tempLine.indexOf("<t:") + 3
-            timeSubstring = tempLine.substring(beginingIndex, tempLine.length)
+            var beginingIndex = tempLine?.indexOf("<t:") + 3
+            timeSubstring = tempLine?.substring(beginingIndex, tempLine?.length)
             // Get the portion of the tag that has the number in it
             timeSubstring = timeSubstring.substring(0, timeSubstring.indexOf(">"))
             // Try to parse the number string into a integer that will represent miliseconds
@@ -186,7 +186,7 @@ function View(props) {
             // Put it into a ref to be used by the speaking function
             customTime.current = customTimeParsed
             // Remove the time specification text
-            tempLine = tempLine.substring(0, beginingIndex - 3)
+            tempLine = tempLine?.substring(0, beginingIndex - 3)
         }
         // If there is no time tag set the ref to null so the default pause time is used
         else{
@@ -261,9 +261,9 @@ function View(props) {
             speak(parsedLine).then(()=>{
                 setTimeout(() => {
                     if(lineRef.current >= noteArrayRef.current.length){
-                        console.log("============================ loading next note ============================")
                         lineRef.current = 0
-                        dispatcher(loadNextNote())
+                        if(autoPlay)
+                            dispatcher(loadNextNote())
                     }
                     else {
                         readNextLine()

@@ -15,6 +15,7 @@ export const appSlice = createSlice({
         noteData: null,
         page: "titles", 
         playOnLoad: false,
+        autoPlay: false,
         uid: null,
         dbRef: null,
         app: null,
@@ -104,14 +105,9 @@ export const appSlice = createSlice({
             state.noteData = action.payload
         },
         saveNewNote: (state, action) => {
-            console.log("in save new note")
-            console.log("state.uid: ")
-            console.log(state.uid)
             if(!state.uid)
                 return
-            console.log("creating a new note")
-            console.log(action.payload)
-            console.log(action)
+     
             var newRef = push(ref(state.dbRef, "noteApp/" + state.uid + "/notes/"))
             let newNotData = {title: action.payload.title, content: action.payload.content}
             set(newRef, newNotData)
@@ -120,16 +116,12 @@ export const appSlice = createSlice({
         },
         saveNote: (state, action) => {
             appSlice.caseReducers.test(state, action)
-            console.log("in save note")
-            console.log("action.payload")
             console.log(action.payload)
             const newNote = action.payload
             if(action.payload.key){
-                console.log("calling update note")
                 appSlice.caseReducers.updateNote(state, {payload: newNote})
             }
             else{
-                console.log("calling save new note")
                 appSlice.caseReducers.saveNewNote(state, {payload: newNote})
             }
         }, 
@@ -247,20 +239,48 @@ export const appSlice = createSlice({
         loadNextNote: (state, action) => {
             // Find the folder
             let folderOfInterest = state.folderArray.find(folder => folder.key === state.folderToDisplayId)
+            // Find the index of the current note in the folders item array
             let currentIndex = folderOfInterest.items.findIndex(itemId => itemId === state.noteData.key)
+            // Increment or loop back the index counter
             if(currentIndex < folderOfInterest.items.length - 1)
                 currentIndex+=1
             else
                 currentIndex=0
+            // Get the ikey at the next index value
             const idOfInterest = folderOfInterest.items[currentIndex]
+            // Find the note with the corrensponding key
             const foundNote = state.noteArray.find(note => note.key === idOfInterest)
+            // Put that note data in state so the view component will update
             appSlice.caseReducers.setNoteData(state, {payload: foundNote})   
         },
         setFolderToDisplayId: (state, action) => {
             state.folderToDisplayId = action.payload
+        },
+        startAutoPlay: (state, action) => {
+            console.log("starting auto play in app slice")
+            // Find the first note in the selected folder's item array
+            const folder = state.folderArray.find(folder => folder.key === state.folderToDisplayId)
+            console.log(folder)
+            let noteId = null
+            if(Array.isArray(folder.items) && folder.items.length > 0)
+                noteId = folder.items[0]
+            console.log(noteId)
+            const noteData = state.noteArray.find(note => note.key === noteId)
+            console.log(noteData.title)
+
+            // Set auto play and play on load to true
+            state.autoPlay = true
+            state.playOnLoad = true
+
+            // Load the note data into state to be read
+            state.noteData = noteData
+
+            // Go to the view page
+            state.page = "view"
+
         }
     },
 })
 
-export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder, loadNextNote, setFolderToDisplayId} = appSlice.actions
+export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder, loadNextNote, setFolderToDisplayId, startAutoPlay} = appSlice.actions
 export default appSlice.reducer

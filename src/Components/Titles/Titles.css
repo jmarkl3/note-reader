@@ -187,3 +187,19 @@
   .titleSettingsButton:hover{
     background-color: rgb(192, 188, 188);
   }
+  .tileButtons{
+    display: inline-block;  
+  }
+  .tileButtonText{
+    font-size: 0px;
+    transition: 500ms;
+    position: absolute;
+    bottom: 3px;
+    width: 100%;
+  }
+  .titleBox:hover .tileButtonText{
+    font-size: 16px;
+  }
+  .playAllButtonContainer{
+    padding: 20px;
+  }

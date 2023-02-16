@@ -7,7 +7,7 @@ import backIcon from "../../Images/backIconS.png"
 import settingsIcon from "../../Images/settingsIconS.png"
 import Folder from './Folder/Folder'
 import { useDispatch, useSelector } from 'react-redux'
-import { createNewFolder, editNote, openNote, removeItemFromFolder, setEditingFolder, setFolderToDisplayId, setItemToAdd, setNoteData, setPage } from '../../Redux/AppSlice'
+import { createNewFolder, editNote, openNote, removeItemFromFolder, setEditingFolder, setFolderToDisplayId, setItemToAdd, setNoteData, setPage, startAutoPlay } from '../../Redux/AppSlice'
 
 function Titles() {  
   const [showSearchResults, setShowSearchResults] = useState(false)
@@ -175,8 +175,17 @@ function Titles() {
             </div>
           </div>
           :
-          <div onClick={()=>dispatcher(setFolderToDisplayId(null))} className='titleBox backBox'>
-            <img src={backIcon}></img>
+          <div className='tileButtons'>
+            <div onClick={()=>dispatcher(setFolderToDisplayId(null))} className='titleBox backBox'>
+              <img src={backIcon}></img>
+              <div className='tileButtonText'>Back</div>
+            </div>
+            <div onClick={()=>dispatcher(startAutoPlay())} className='titleBox backBox'>
+              <div className='playAllButtonContainer'>
+                <img src={playIcon} className="playAllButton"></img>
+              </div>
+              <div className='tileButtonText'>Play All</div>
+            </div>
           </div>
           }
           {foldersFromFolder().map(folderData => (
