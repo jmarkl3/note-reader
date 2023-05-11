@@ -4,7 +4,7 @@ import {nouns} from "../../Nouns.js"
 import { loadNextNote, setPage } from '../../Redux/AppSlice.js'
 import "./View.css"
 
-function View(props) {
+function View() {
   
     const [noteArray, setNoteArray] = useState([])
     
@@ -231,6 +231,7 @@ function View(props) {
         return newNumber
     }
     function readNextLine(){
+        console.log("reading next line")
 
         // If there is no note array return
         if(!Array.isArray(noteArrayRef.current) || noteArrayRef.current.length == 0)
@@ -264,6 +265,9 @@ function View(props) {
                         lineRef.current = 0
                         if(autoPlay)
                             dispatcher(loadNextNote())
+                        else{
+                            readNextLine()
+                        }
                     }
                     else {
                         readNextLine()
