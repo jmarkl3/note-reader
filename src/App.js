@@ -109,7 +109,6 @@ function App() {
 
   function authListenerSetup(){
     onAuthStateChanged(auth, userSnap => {
-      console.log("fond user with id "+userSnap.uid)
       dispatcher(updateUid(userSnap?.uid))
     })
 

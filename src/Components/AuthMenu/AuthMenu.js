@@ -1,14 +1,13 @@
 import React, { useRef, useState } from 'react'
 import "./AuthMenu.css"
-
-import {auth} from "../../Firebase.js"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { refFromURL } from 'firebase/database'
+import { useSelector } from 'react-redux'
 
 function AuthMenu() {
   
     const [createAccount, setCreateAccount] = useState(false)
     const [authMessage, setAuthMessage] = useState(false)
+    const auth = useSelector(state => state.appSlice.auth)
     const emailInput = useRef()
     const passInput = useRef()
     const passInput2 = useRef()        
@@ -45,6 +44,9 @@ function AuthMenu() {
         const email = emailInput.current.value
         const password = passInput.current.value
         
+        console.log("auth")
+        console.log(auth)
+
         // Create the user
         signInWithEmailAndPassword(auth, email, password).then(msg => {
             setAuthMessage(msg.message)
