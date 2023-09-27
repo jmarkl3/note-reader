@@ -9,8 +9,7 @@ import TopNav from './Components/TopNav/TopNav';
 import { onAuthStateChanged } from 'firebase/auth';
 import AuthMenu from './Components/AuthMenu/AuthMenu';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFolderArray, setNoteArray, setNoteData, setPage, initializeAppSlice, updateUid, updateFolderName } from './Redux/AppSlice';
-import { cosineWindow } from '@tensorflow/tfjs';
+import { setFolderArray, setNoteArray, setNoteData, setPage, initializeAppSlice, updateUid, updateFolderName, setUserEmail } from './Redux/AppSlice';
 
 /*
 
@@ -77,6 +76,9 @@ function App() {
   const dbRef = useSelector(state => state.appSlice.dbRef)
   const uid = useSelector(state => state.appSlice.uid)
   
+  console.log("auth:")
+  console.log(auth)
+
   // This runs on start and initializes the firebase setup in appSlice
   useEffect(()=>{
     dispatcher(initializeAppSlice())  
@@ -109,6 +111,7 @@ function App() {
 
   function authListenerSetup(){
     onAuthStateChanged(auth, userSnap => {
+      dispatcher(setUserEmail(userSnap?.email))
       dispatcher(updateUid(userSnap?.uid))
     })
 

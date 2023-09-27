@@ -62,6 +62,9 @@ function View() {
         console.log(_line)
 
         var tempLine = _line
+        if(tempLine?.includes("====")){
+            tempLine = " "
+        }
         // Inline comments
         if(tempLine?.includes("#")){
             tempLine = tempLine?.subString(0, tempLine?.indexOf("#")) 

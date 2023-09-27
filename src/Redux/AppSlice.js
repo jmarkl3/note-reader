@@ -278,9 +278,12 @@ export const appSlice = createSlice({
             // Go to the view page
             state.page = "view"
 
-        }
+        },
+        setUserEmail: (state, action) => {
+            state.userEmail = action.payload
+        },
     },
 })
 
-export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder, loadNextNote, setFolderToDisplayId, startAutoPlay} = appSlice.actions
+export const {setEditingFolder,setFolderArray, setNoteArray, setNoteData, setPage, openNote, editNote, initializeAppSlice, updateUid, updateDbRef, saveNote, updateNote, saveNewNote, deleteNote, createNewFolder, updateFolderName, deleteFolder, setItemToAdd, addItemToFolder, clearFolder, removeItemFromFolder, loadNextNote, setFolderToDisplayId, startAutoPlay, setUserEmail} = appSlice.actions
 export default appSlice.reducer
